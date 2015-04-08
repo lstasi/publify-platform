@@ -1,0 +1,18 @@
+login: &login
+  adapter: mysql2
+  host: <%= @dbip %>
+  username: <%= @dbuser %>
+  password: <%= @dbpassword %>
+
+
+development:
+  database: <%= @dbname %>_dev
+  <<: *login
+
+test:
+  database: <%= @dbname %>_tests
+  <<: *login
+
+production:
+  database: <%= @dbname %> 
+  <<: *login

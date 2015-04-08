@@ -1,0 +1,24 @@
+ global
+        daemon
+        maxconn 256
+
+    defaults
+        mode http
+        timeout connect 5000ms
+        timeout client 50000ms
+        timeout server 50000ms
+
+    frontend http-in
+        bind *:80
+        default_backend servers
+
+    backend servers
+        server web1 <%= @webip %>:3000 maxconn 32 check port 3000
+	
+	listen stats :8080
+		mode http
+		stats enable
+		stats hide-version
+		stats realm Haproxy\ Statistics
+		stats uri /
+		stats auth 3scale:test

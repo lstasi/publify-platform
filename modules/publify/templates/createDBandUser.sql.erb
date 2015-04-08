@@ -1,0 +1,22 @@
+-- Create DB and User
+
+CREATE DATABASE <%= @dbname %> 
+ DEFAULT CHARACTER SET utf8
+ DEFAULT COLLATE utf8_general_ci;
+
+CREATE DATABASE <%= @dbname %>_dev
+ DEFAULT CHARACTER SET utf8
+ DEFAULT COLLATE utf8_general_ci;
+ 
+CREATE DATABASE <%= @dbname %>_tests 
+ DEFAULT CHARACTER SET utf8
+ DEFAULT COLLATE utf8_general_ci;
+
+CREATE USER '<%= @dbuser %>'@'<%= @webip %>' IDENTIFIED BY '<%= @dbpassword %>';
+GRANT ALL PRIVILEGES ON <%= @dbname %>_dev.* TO '<%= @dbuser %>'@'<%= @webip %>';
+GRANT ALL PRIVILEGES ON <%= @dbname %>_tests.* TO '<%= @dbuser %>'@'<%= @webip %>';
+GRANT ALL PRIVILEGES ON <%= @dbname %>.* TO '<%= @dbuser %>'@'<%= @webip %>';
+
+FLUSH PRIVILEGES;
+
+
