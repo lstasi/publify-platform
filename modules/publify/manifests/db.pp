@@ -35,7 +35,7 @@ class publify::db{
     }
 	
 	exec { "Create Databases":
-		command => "mysql -v -e '\\. /tmp/createDBandUser.sql'",
+		command => "mysql -v < /tmp/createDBandUser.sql",
 		user => 'root',
 		path   => "/bin",
 		logoutput => true,
