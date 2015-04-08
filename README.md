@@ -2,9 +2,9 @@
  * Vagrant based project to deploy 3 Servers, Load Balancer, Application (Publify) and DB (mysql)
  
 #Requirements
- *Vagrant 1.7.2
- *Virtual Box 4.3.26
- *3G RAM ( If not, change v.memory on the Vagrant file)
+ * Vagrant 1.7.2
+ * Virtual Box 4.3.26
+ * 3G RAM ( If not, change v.memory on the Vagrant file)
  
 #Instructions
 	Just Run Vagrant up on the project folder.
