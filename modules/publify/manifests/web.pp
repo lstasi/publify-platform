@@ -81,7 +81,7 @@ class publify::web{
 		require=>Exec["DB Seed"]
 	}
 	exec { "Run Server":
-		command => "rails server >server.log &;touch server.lck;",
+		command => "rails server &>server.log;touch server.lck;",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
 		creates => "$publify_folder/server.lck",
