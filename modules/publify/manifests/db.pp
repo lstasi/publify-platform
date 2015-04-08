@@ -16,6 +16,10 @@ class publify::db{
 		ensure => present,
 		require => Package["mysql-community-repo"]
 	}
+	package { "mysql-community-client": 
+		ensure => present,
+		require => Package["mysql-community-repo"]
+	}
 
 	service { "mysqld":
         ensure => running,
@@ -31,9 +35,10 @@ class publify::db{
     }
 	
 	exec { "Create Databases":
-		command => "mysql -e '\\. /tmp/createDBandUser.sql'>/var/log/publifydb.log",
+		command => "mysql -v -e '\\. /tmp/createDBandUser.sql'>/var/log/publifydb.log",
 		user => 'root',
 		path   => "/bin",
-		creates => "/var/lib/mysql/$dbname"
+		creates => "/var/lib/mysql/$dbname",
+		require => [Package["mysql-community-client"],Service["mysqld"]]
 	}
 }
