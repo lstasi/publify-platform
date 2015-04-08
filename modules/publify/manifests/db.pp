@@ -35,11 +35,11 @@ class publify::db{
     }
 	
 	exec { "Create Databases":
-		command => "sleep 30 && mysql -v < /tmp/createDBandUser.sql",
+		command => "mysql -v < /tmp/createDBandUser.sql",
 		user => 'root',
 		path   => "/bin",
 		logoutput => true,
 		creates => "/var/lib/mysql/$dbname",
-		require => [Package["mysql-community-client"],Service["mysqld"]]
+		require => [Package["mysql-community-client"],Service["mysqld"],File["/tmp/createDBandUser.sql"]]
 	}
 }
