@@ -45,45 +45,50 @@ class publify::web{
     }
 	
 	exec { "Bundle Install":
-		command => "bundle install >bundle_install.log; if [ $? -eq 0 ]; then touch bundle_install.lck; else exit 1; fi",
+		command => "bundle install; if [ $? -eq 0 ]; then touch bundle_install.lck; else exit 1; fi",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
-		creates => "$publify_folder/bundle_install",
+		creates => "$publify_folder/bundle_install.lck",
 		timeout     => 3600,
+		logoutput => true,
 		require=>[File["$publify_folder/config/database.yml"],Package["bundle","rake","mysql-community-devel","ruby-devel","gcc-c++","libxml2-devel"]]
 	}
 	exec { "DB Setup":
-		command => "rake db:setup >db_setup.log; if [ $? -eq 0 ]; then touch db_setup.lck; else exit 1; fi",
+		command => "rake db:setup; if [ $? -eq 0 ]; then touch db_setup.lck; else exit 1; fi",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
+		logoutput => true,
 		creates => "$publify_folder/db_setup.lck",
 		require=>Exec["Bundle Install"]
 	}
 	exec { "DB Migrate":
-		command => "rake db:migrate >db_migrate.log; if [ $? -eq 0 ]; then touch db_migrate.lck; else exit 1; fi",
+		command => "rake db:migrate; if [ $? -eq 0 ]; then touch db_migrate.lck; else exit 1; fi",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
-		creates => "$publify_folder/db_migrate.log",
+		logoutput => true,
+		creates => "$publify_folder/db_migrate.lck",
 		require=>Exec["DB Setup"]
 	}
 	exec { "DB Seed":
-		command => "rake db:seed >db_seed.log; if [ $? -eq 0 ]; then touch db_seed.lck; else exit 1; fi",
+		command => "rake db:seed; if [ $? -eq 0 ]; then touch db_seed.lck; else exit 1; fi",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
+		logoutput => true,
 		creates => "$publify_folder/db_seed.lck",
 		require=>Exec["DB Migrate"]
 	}
 	exec { "Compile Assets":
-		command => "rake assets:precompile >assets.log; if [ $? -eq 0 ]; then touch assets.lck; else exit 1; fi",
+		command => "rake assets:precompile; if [ $? -eq 0 ]; then touch assets.lck; else exit 1; fi",
 		cwd => $publify_folder,
 		path   => "/usr/local/bin/:/bin",
+		logoutput => true,
 		creates => "$publify_folder/assets.lck",
 		require=>Exec["DB Seed"]
 	}
 	exec { "Run Server":
-		command => "rails server &>server.log;touch server.lck;",
+		command => "rails server -d &>server.log;touch server.lck;",
 		cwd => $publify_folder,
-		path   => "/usr/local/bin/:/bin",
+		path   => "/usr/local/bin/:/bin:$publify_folder",
 		creates => "$publify_folder/server.lck",
 		require=>Exec["Compile Assets"]
 	}

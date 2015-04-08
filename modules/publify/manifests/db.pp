@@ -35,9 +35,10 @@ class publify::db{
     }
 	
 	exec { "Create Databases":
-		command => "mysql -v -e '\\. /tmp/createDBandUser.sql'>/var/log/publifydb.log",
+		command => "mysql -v -e '\\. /tmp/createDBandUser.sql'",
 		user => 'root',
 		path   => "/bin",
+		logoutput => true,
 		creates => "/var/lib/mysql/$dbname",
 		require => [Package["mysql-community-client"],Service["mysqld"]]
 	}
